@@ -12,14 +12,14 @@ export const getUsers = async (req, res) => {
 export const getUser = async (req, res) => {
   try {
     const { username } = req.params;
-    const user = await Alumno.findOne({
+    const user = await User.findOne({
       where: {
         username,
       },
     });
 
     if (!user) {
-      return res.status(404).json({ message: "El usuario no existe" });
+      return res.status(404).json({ message: "The user doesn't exist" });
     }
     res.json(user);
   } catch (error) {
@@ -28,8 +28,16 @@ export const getUser = async (req, res) => {
 };
 
 export const createUser = async (req, res) => {
-  const { username, name, lastname, birth_date, phone, user_type, email } =
-    req.body;
+  const {
+    username,
+    name,
+    lastname,
+    birth_date,
+    phone,
+    direction,
+    user_type,
+    email,
+  } = req.body;
 
   try {
     const newUser = await User.create({
@@ -38,6 +46,7 @@ export const createUser = async (req, res) => {
       lastname,
       birth_date,
       phone,
+      direction,
       user_type,
       email,
     });
@@ -50,14 +59,15 @@ export const createUser = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const { username } = req.params;
-    const { name, lastname, birth_date, phone, user_type, email } = req.body;
+    const { name, lastname, birth_date, phone, direction, user_type, email } =
+      req.body;
 
     const user = await User.findByPk(username);
-    console.log(alumno);
     user.name = name;
     user.lastname = lastname;
     user.birth_date = birth_date;
     user.phone = phone;
+    user.direction = direction;
     user.user_type = user_type;
     user.email = email;
 
