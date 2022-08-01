@@ -1,9 +1,9 @@
 import { Router } from "express";
 import {
-  createAccount,
-  deleteAccount,
   getAccount,
   getAccounts,
+  createAccount,
+  deleteAccount,
   updateAccount,
 } from "../controllers/accountController.js";
 

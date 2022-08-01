@@ -5,10 +5,11 @@ const hostname = "localhost";
 
 // Importing models to add in the DB
 import "./models/accountModel.js";
+import "./models/orderModel.js";
 import "./models/clotheModel.js";
 import "./models/detailModel.js";
-import "./models/orderModel.js";
 import "./models/userModel.js";
+import "./models/notificationModel.js";
 
 async function main() {
   try {
