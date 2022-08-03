@@ -32,6 +32,5 @@ export const Clothe = sequelize.define(
       type: DataTypes.ARRAY(DataTypes.STRING),
     },
   },
-  // Don't save fields createdAt and updatedAt
-  { timestamps: false }
+  { timestamps: true }
 );

@@ -17,8 +17,7 @@ export const Detail = sequelize.define(
       type: DataTypes.INTEGER,
     },
   },
-  // Don't save fields createdAt and updatedAt
-  { timestamps: false }
+  { timestamps: true }
 );
 
 // Relationships

@@ -16,8 +16,7 @@ export const Order = sequelize.define(
       type: DataTypes.DATEONLY,
     },
   },
-  // Don't save fields createdAt and updatedAt
-  { timestamps: false }
+  { timestamps: true }
 );
 
 Detail.hasOne(Order, {

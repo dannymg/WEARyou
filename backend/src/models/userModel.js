@@ -7,11 +7,13 @@ export const User = sequelize.define(
     username: {
       type: DataTypes.STRING(20),
       primaryKey: true,
+      allowNull: false,
     },
     name: {
       type: DataTypes.STRING(50),
+      allowNull: false,
     },
-    lastname: {
+    last_name: {
       type: DataTypes.STRING(50),
     },
     birth_date: {
@@ -24,11 +26,23 @@ export const User = sequelize.define(
     direction: {
       type: DataTypes.ARRAY(DataTypes.STRING),
     },
-    // Inheritance on the same table (CLIENT, ADMIN)
-    user_type: {
-      type: DataTypes.STRING(8),
+    email: {
+      type: DataTypes.STRING(254),
+      primaryKey: true,
+      allowNull: false,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    salt: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    role: {
+      type: DataTypes.STRING(10),
+      allowNull: false,
     },
   },
-  // Don't save fields createdAt and updatedAt
-  { timestamps: false }
+  { timestamps: true }
 );

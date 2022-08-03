@@ -26,8 +26,7 @@ export const Payment = sequelize.define(
       type: DataTypes.BOOLEAN,
     },
   },
-  // Don't save fields createdAt and updatedAt
-  { timestamps: false }
+  { timestamps: true }
 );
 
 Order.hasOne(Payment, {

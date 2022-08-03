@@ -18,8 +18,7 @@ export const Notification = sequelize.define(
       type: DataTypes.STRING(10),
     },
   },
-  // Don't save fields createdAt and updatedAt
-  { timestamps: false }
+  { timestamps: true }
 );
 
 Order.hasOne(Notification, {
