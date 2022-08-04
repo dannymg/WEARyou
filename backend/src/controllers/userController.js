@@ -1,6 +1,12 @@
 import { User } from "../models/userModel.js";
-import { constants } from '../config/constants.js';
-import { generateARandomSalt, hashPassword, isCorrectPassword, cleanUser, createNewJwt } from '../utils/authUtils.js'
+import { constants } from "../config/constants.js";
+import {
+  generateARandomSalt,
+  hashPassword,
+  isCorrectPassword,
+  cleanUser,
+  createNewJwt,
+} from "../utils/authUtils.js";
 export const getUsers = async (req, res) => {
   try {
     const users = await User.findAll();
@@ -52,7 +58,7 @@ export const createUser = async (req, res) => {
       email,
       salt: randomSalt,
       password: hashPassword(password, randomSalt),
-      role: constants.ROLES.CLIENT
+      role: constants.ROLES.CLIENT,
     });
 
     const token = createNewJwt(newUser);
@@ -60,7 +66,6 @@ export const createUser = async (req, res) => {
       token,
       user: cleanUser(newUser),
     });
-
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -69,10 +74,20 @@ export const createUser = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const { username } = req.params;
-    const { name, last_name, birth_date, phone, direction, user_type, email } =
-      req.body;
+    const {
+      name,
+      last_name,
+      birth_date,
+      phone,
+      direction,
+      user_type,
+      email,
+      password,
+    } = req.body;
 
     const user = await User.findByPk(username);
+    const randomSalt = generateARandomSalt();
+
     user.name = name;
     user.last_name = last_name;
     user.birth_date = birth_date;
@@ -80,6 +95,9 @@ export const updateUser = async (req, res) => {
     user.direction = direction;
     user.user_type = user_type;
     user.email = email;
+    user.salt = randomSalt;
+    user.password = hashPassword(password, randomSalt);
+    user.role = constants.ROLES.CLIENT;
 
     await user.save();
     res.json(cleanUser(user));
@@ -128,4 +146,4 @@ export const signInUser = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-}
+};

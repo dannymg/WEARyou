@@ -7,8 +7,8 @@ import {
   deleteUser,
   signInUser,
 } from "../controllers/userController.js";
-import { constants } from "../config/constants.js"
-import { hasRole } from '../utils/authUtils.js'
+import { constants } from "../config/constants.js";
+import { hasRole } from "../utils/authUtils.js";
 
 const router = Router();
 
