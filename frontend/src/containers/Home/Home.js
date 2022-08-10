@@ -9,41 +9,53 @@ import {
   Grid,
   CssBaseline,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import { useEffect, useState } from "react";
+import { axiosInstance } from "../../utils/axiosInstance";
 
 export const Home = () => {
-  const clothes = [
-    {
-      id: 1,
-    },
-    {
-      id: 2,
-    },
-    {
-      id: 3,
-    },
-    {
-      id: 4,
-    },
-    {
-      id: 5,
-    },
+  const [clothes, setClothes] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    {
-      id: 6,
-    },
-    {
-      id: 7,
-    },
-  ];
+  const fetchClothes = async () => {
+    const response = await axiosInstance.get('/clothe');
+    const { data } = response || {};
+    const clothesWithId = (data || []).map((item, index) => {
+      item.id = index;
+      return item;
+    });
+
+    setClothes(clothesWithId);
+  }
+
+  useEffect(() => {
+    setLoading(true);
+    try {
+      fetchClothes();
+    } catch (error) {
+      const message = error.response.data.message || error.message;
+      alert(`Error: ${message}`);
+    } finally {
+      setLoading(false);
+    }
+  }, [])
+
+  if (loading) {
+    return <Layout>
+      <Box minHeight={'75vh'} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+        <CircularProgress />
+      </Box>
+    </Layout>
+  }
 
   return (
     <Layout>
       <CssBaseline />
-      <Grid spacing={2} container>
-        {clothes.map(({ id }) => (
-          <Grid key={id} item sm={4}>
+      <Grid spacing={2} container minHeight={'75vh'}>
+        {clothes.map((clothe, index) => (
+          <Grid key={index} item sm={4}>
             <Card sx={{ maxWidth: 345 }}>
               <CardMedia
                 component="img"
@@ -52,18 +64,23 @@ export const Home = () => {
                 alt="clothes"
               />
               <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  Camiseta
+                <Typography variant="h5" component="div">
+                  {clothe.clothe_type}
+                </Typography>
+                <Typography gutterBottom variant="body1" color="text.secondary">
+                  {clothe.brand}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua
+                  Color: {clothe.color}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Talla: {clothe.size}
                 </Typography>
               </CardContent>
               <CardActions>
                 <Box sx={{ flexGrow: 1 }}>
                   <Typography variant="h4" fontWeight={"bold"}>
-                    $10
+                    ${clothe.price}
                   </Typography>
                 </Box>
                 <Box sx={{ flexGrow: 0 }}>

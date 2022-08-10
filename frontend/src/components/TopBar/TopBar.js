@@ -6,22 +6,43 @@ import {
   Box,
   AppBar,
   Button,
+  MenuItem,
+  Typography,
+  Menu,
+  Avatar,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import HomeIcon from "@mui/icons-material/Home";
-
-// const settings = ['Profile', 'Logout'];
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { isUserAuthenticated } from "../../utils/utils";
 
 export const TopBar = () => {
-  //const [anchorElUser, setAnchorElUser] = React.useState(null);
+  let navigate = useNavigate();
+  const [anchorElUser, setAnchorElUser] = useState(null);
 
-  // const handleOpenUserMenu = (event) => {
-  //   setAnchorElUser(event.currentTarget);
-  // };
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
 
-  // const handleCloseUserMenu = () => {
-  //   setAnchorElUser(null);
-  // };
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  const settingsMenu = [
+    {
+      id: 1,
+      name: "Cerrar sesión",
+      onClick: () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        navigate('/login');
+      }
+    }
+
+  ];
+
+  const userIsAuthenticated = isUserAuthenticated()
 
   return (
     <AppBar position="fixed">
@@ -40,12 +61,12 @@ export const TopBar = () => {
               <ShoppingCartIcon />
             </IconButton>
           </Box>
-          <Box sx={{ flexGrow: 0 }}>
+          {!userIsAuthenticated && <Box sx={{ flexGrow: 0 }}>
             <Button variant="outlined" color="inherit">
               Iniciar Sesion
             </Button>
-          </Box>
-          {/* <Box sx={{ flexGrow: 0 }}>
+          </Box>}
+          {userIsAuthenticated && <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Abrir configuraciones" arrow>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar />
@@ -67,13 +88,13 @@ export const TopBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+              {settingsMenu.map((setting) => (
+                <MenuItem key={setting.id} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">{setting.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
-          </Box> */}
+          </Box>}
         </Toolbar>
       </Container>
     </AppBar>
