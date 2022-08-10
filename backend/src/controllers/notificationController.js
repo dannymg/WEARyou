@@ -10,7 +10,7 @@ export const getUserNotifications = async (req, res) => {
     });
     res.json(notifications);
   } catch (error) {
-    return res.status(500).json({ message: error.mesage });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -34,6 +34,15 @@ export const getUserNotification = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+export const getAllNotifications = async (req, res) => {
+  try {
+    const notifications = await Notification.findAll();
+    res.json(notifications);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}
 
 export const createNotification = async (req, res) => {
   const { code, date_notification, state, username } = req.body;

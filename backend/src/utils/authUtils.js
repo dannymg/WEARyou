@@ -55,7 +55,9 @@ export const ensureIsAuthenticated = async (req, res, next) => {
     }
 
     const user = await User.findOne({
-      username: payload.sub,
+      where: {
+        username: payload.sub,
+      }
     });
 
     if (!user) {
@@ -112,3 +114,33 @@ export const cleanUser = (user) => {
     updatedAt: user.updatedAt,
   };
 };
+
+
+export const createAdminUserIfNotExists = async () => {
+  const adminUser = await User.findOne({
+    where: {
+      username: constants.ADMIN.USERNAME,
+    }
+  });
+  if (!adminUser) {
+    const salt = generateARandomSalt();
+    const password = constants.ADMIN.PASSWORD;
+    const passwordHashed = hashPassword(password, salt);
+    const user = new User({
+      username: constants.ADMIN.USERNAME,
+      name: constants.ADMIN.NAME,
+      last_name: constants.ADMIN.LAST_NAME,
+      birth_date: constants.ADMIN.BIRTH_DATE,
+      phone: constants.ADMIN.PHONE,
+      direction: constants.ADMIN.DIRECTION,
+      email: constants.ADMIN.EMAIL,
+      role: constants.ROLES.ADMIN,
+      salt: salt,
+      password: passwordHashed,
+    });
+    await user.save();
+    console.log('Admin user created');
+    return;
+  }
+  console.log('Admin user already exists');
+}

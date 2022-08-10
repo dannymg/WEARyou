@@ -1,10 +1,8 @@
 import "dotenv/config";
 import express from "express";
 import userRoutes from "./routes/userRoutes.js";
-import clotheRoutes from "./routes/clotheRoutes.js";
-import detailRoutes from "./routes/detailRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
-
+import clotheRoutes from "./routes/clotheRoutes.js";
 import cors from "cors";
 
 const app = express();
@@ -19,8 +17,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(userRoutes);
-app.use(clotheRoutes);
-app.use(detailRoutes);
 app.use(notificationRoutes);
+app.use(clotheRoutes);
 
 export default app;

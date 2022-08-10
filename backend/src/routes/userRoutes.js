@@ -12,10 +12,10 @@ import { hasRole } from "../utils/authUtils.js";
 
 const router = Router();
 
-router.get("/user", getUsers);
-router.get("/user/:username", hasRole([constants.ROLES.CLIENT]), getUser);
-router.put("/user/:username", updateUser);
-router.delete("/user/:username", deleteUser);
+router.get("/user", hasRole([constants.ROLES.ADMIN]), getUsers);
+router.get("/user/:username", hasRole([constants.ROLES.CLIENT, constants.ROLES.ADMIN]), getUser);
+router.put("/user/:username", hasRole([constants.ROLES.ADMIN]), updateUser);
+router.delete("/user/:username", hasRole([constants.ROLES.ADMIN]), deleteUser);
 router.post("/user/sign_in", signInUser);
 router.post("/user/sign_up", createUser);
 

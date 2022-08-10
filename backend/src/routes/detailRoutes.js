@@ -6,13 +6,14 @@ import {
   updateDetail,
   deleteDetail,
 } from "../controllers/detailController.js";
+import { constants } from "../config/constants.js";
 
 const router = Router();
 
-router.get("/detail", getDetail);
-router.get("/detail/:code", getDetails);
-router.post("/detail", createDetail);
-router.put("/detail/:code", updateDetail);
-router.delete("/detail/:code", deleteDetail);
+router.get("/detail", hasRole([constants.ROLES.ADMIN]), getDetail);
+router.get("/detail/:code", hasRole([constants.ROLES.CLIENT, constants.ROLES.ADMIN]), getDetails);
+router.post("/detail", hasRole([constants.ROLES.CLIENT, constants.ROLES.ADMIN]), createDetail);
+router.put("/detail/:code", hasRole([constants.ROLES.CLIENT, constants.ROLES.ADMIN]), updateDetail);
+router.delete("/detail/:code", hasRole([constants.ROLES.CLIENT, constants.ROLES.ADMIN]), deleteDetail);
 
 export default router;

@@ -1,5 +1,6 @@
 import app from "./app.js";
 import { sequelize } from "./database/database.js";
+import { createAdminUserIfNotExists } from "./utils/authUtils.js";
 const port = process.env.PORT || 4000;
 
 // Importing models to add in the DB
@@ -19,6 +20,12 @@ async function main() {
     });
   } catch (error) {
     console.log("Failed to connect DB ", error);
+  }
+
+  try {
+    await createAdminUserIfNotExists()
+  } catch (error) {
+    console.log("Usuario administrador no pudo ser creado", error);
   }
 }
 

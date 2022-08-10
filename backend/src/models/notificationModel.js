@@ -15,7 +15,9 @@ export const Notification = sequelize.define(
       type: DataTypes.DATEONLY,
     },
     state: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.ENUM({
+        values: ['Pendiente', 'Completado', 'Cancelado'],
+      }),
     },
   },
   { timestamps: true }
