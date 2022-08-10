@@ -9,8 +9,8 @@ import {
 
 const router = Router();
 
-router.get("/clothe", getClothe);
-router.get("/clothe/:code", getClothes);
+router.get("/clothe", getClothes);
+router.get("/clothe/:code", getClothe);
 router.post("/clothe", createClothe);
 router.put("/clothe/:code", updateClothe);
 router.delete("/clothe/:code", deleteClothe);
