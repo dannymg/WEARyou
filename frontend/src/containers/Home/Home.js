@@ -14,10 +14,15 @@ import {
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../../utils/axiosInstance";
+import { isUserAuthenticated } from "../../utils/utils";
+import { AlertDialog } from "../../components/AlertDialog";
+import { AccountFormDialog } from "./AccountFormDialog";
 
 export const Home = () => {
   const [clothes, setClothes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [openAlertDialog, setOpenAlertDialog] = useState(false);
+  const [openNewAccountDialog, setOpenNewAccountDialog] = useState(false);
 
   const fetchClothes = async () => {
     const response = await axiosInstance.get('/clothe');
@@ -28,6 +33,14 @@ export const Home = () => {
     });
 
     setClothes(clothesWithId);
+  }
+
+  const handleAddToCart = (clothe) => {
+    if (!isUserAuthenticated()) {
+      setOpenAlertDialog(true);
+      return;
+
+    }
   }
 
   useEffect(() => {
@@ -41,6 +54,16 @@ export const Home = () => {
       setLoading(false);
     }
   }, [])
+
+  const handleClose = () => {
+    setOpenAlertDialog(false);
+    setOpenNewAccountDialog(false);
+  };
+
+  const handleOk = () => {
+    setOpenAlertDialog(false);
+    setOpenNewAccountDialog(true)
+  }
 
   if (loading) {
     return <Layout>
@@ -92,6 +115,7 @@ export const Home = () => {
                   <Button
                     startIcon={<AddShoppingCartIcon />}
                     variant="outlined"
+                    onClick={() => handleAddToCart(clothe)}
                   >
                     Agregar al carrito
                   </Button>
@@ -101,6 +125,17 @@ export const Home = () => {
           </Grid>
         ))}
       </Grid>
+      <AlertDialog
+        open={openAlertDialog}
+        onClickCancel={handleClose}
+        onClickOk={handleOk}
+        description={'Debes iniciar sesión para agregar al carrito'}
+        okButtonText={'Crear Cuenta'}
+      />
+      <AccountFormDialog
+        open={openNewAccountDialog}
+        onClose={handleClose} />
+
     </Layout>
   );
 };

@@ -36,7 +36,7 @@ export const TopBar = () => {
       onClick: () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        navigate('/login');
+        navigate('/');
       }
     }
 
@@ -89,7 +89,7 @@ export const TopBar = () => {
               onClose={handleCloseUserMenu}
             >
               {settingsMenu.map((setting) => (
-                <MenuItem key={setting.id} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting.id} onClick={setting.onClick}>
                   <Typography textAlign="center">{setting.name}</Typography>
                 </MenuItem>
               ))}
