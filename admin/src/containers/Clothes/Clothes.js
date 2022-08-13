@@ -14,21 +14,23 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../../utils/axiosInstance";
-import { DataGrid } from '@mui/x-data-grid';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { DataGrid } from "@mui/x-data-grid";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+// import DeleteSharp from "@mui/icons-material/DeleteSharp";
+// import ModeEdit from "@mui/icons-material/ModeEdit";
 
 export const Clothes = () => {
   const [clothes, setClothes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const defaultFormData = {
-    code: '',
-    brand: '',
-    color: '',
-    size: '',
+    code: "",
+    brand: "",
+    color: "",
+    size: "",
     price: 0,
-    clothe_type: ''
-  }
+    clothe_type: "",
+  };
   const [formData, setFormData] = useState(defaultFormData);
 
   const handleClickOpenDialog = () => {
@@ -37,20 +39,37 @@ export const Clothes = () => {
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    setFormData(defaultFormData)
+    setFormData(defaultFormData);
   };
 
   const columns = [
-    { field: 'code', headerName: 'Codigo', flex: 1 },
-    { field: 'brand', headerName: 'Marca', flex: 1 },
-    { field: 'color', headerName: 'Color', flex: 1 },
-    { field: 'size', headerName: 'Talla', flex: 1 },
-    { field: 'price', headerName: 'Precio', flex: 1 },
-    { field: 'clothe_type', headerName: 'Tipo de ropa', flex: 1 },
+    { field: "code", headerName: "Codigo", flex: 1 },
+    { field: "brand", headerName: "Marca", flex: 1 },
+    { field: "color", headerName: "Color", flex: 1 },
+    { field: "size", headerName: "Talla", flex: 1 },
+    { field: "price", headerName: "Precio", flex: 1 },
+    { field: "clothe_type", headerName: "Tipo de ropa", flex: 1 },
+    {
+      // field: "actions",
+      // headerName: "Acciones",
+      // flex: 1,
+      // renderCell: () => {
+      //   return (
+      //     <Box display="flex" justifyContent="center" alignItems="center">
+      //       <IconButton aria-label="delete" size="small">
+      //         <ModeEdit fontSize="inherit" />
+      //       </IconButton>
+      //       <IconButton aria-label="delete" size="small">
+      //         <DeleteSharp fontSize="inherit" />
+      //       </IconButton>
+      //     </Box>
+      //   );
+      // },
+    },
   ];
 
-  const fetchUsers = async () => {
-    const response = await axiosInstance.get('/clothe');
+  const fetchClothes = async () => {
+    const response = await axiosInstance.get("/clothe");
     const { data } = response || {};
     const clothesWithId = (data || []).map((item, index) => {
       item.id = index;
@@ -58,19 +77,19 @@ export const Clothes = () => {
     });
 
     setClothes(clothesWithId);
-  }
+  };
 
   useEffect(() => {
     setLoading(true);
     try {
-      fetchUsers();
+      fetchClothes();
     } catch (error) {
       const message = error.response.data.message || error.message;
       alert(`Error: ${message}`);
     } finally {
       setLoading(false);
     }
-  }, [])
+  }, []);
 
   const onChangeInputFormData = (event) => {
     const { name, value } = event.target;
@@ -83,11 +102,11 @@ export const Clothes = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true)
+    setLoading(true);
     try {
-      await axiosInstance.post('/clothe', formData)
-      await fetchUsers();
-      setFormData(defaultFormData)
+      await axiosInstance.post("/clothe", formData);
+      await fetchClothes();
+      setFormData(defaultFormData);
       setOpenDialog(false);
     } catch (error) {
       const message = error.response.data.message || error.message;
@@ -95,38 +114,32 @@ export const Clothes = () => {
     } finally {
       setLoading(false);
     }
-
-  }
+  };
 
   return (
     <Layout>
       <Toolbar disableGutters>
         <Box sx={{ flexGrow: 1 }}>
-          <Typography variant="h4">
-            Prendas de Vestir
-          </Typography>
+          <Typography variant="h4">Prendas de Vestir</Typography>
         </Box>
         <Box sx={{ flexGrow: 0 }}>
           <Tooltip title="Crear nueva prenda" arrow>
-            <IconButton aria-label="add" size="large" color="primary" onClick={handleClickOpenDialog}>
+            <IconButton
+              aria-label="add"
+              size="large"
+              color="primary"
+              onClick={handleClickOpenDialog}
+            >
               <AddCircleIcon fontSize="large" />
             </IconButton>
           </Tooltip>
         </Box>
       </Toolbar>
-      <Box sx={{ height: 450, width: '100%' }}>
-        <DataGrid
-          rows={clothes}
-          columns={columns}
-          loading={loading}
-        />
+      <Box sx={{ height: 450, width: "100%" }}>
+        <DataGrid rows={clothes} columns={columns} loading={loading} />
       </Box>
       <Dialog open={openDialog} onClose={handleCloseDialog} fullWidth="sm">
-        <Box
-          component="form"
-          noValidate
-          onSubmit={handleSubmit}
-        >
+        <Box component="form" noValidate onSubmit={handleSubmit}>
           <DialogTitle>Agregar Nueva Prenda</DialogTitle>
           <DialogContent>
             <TextField
@@ -138,7 +151,6 @@ export const Clothes = () => {
               onChange={onChangeInputFormData}
               value={formData.code}
               required
-
             />
 
             <TextField
@@ -188,8 +200,16 @@ export const Clothes = () => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseDialog} variant="contained" type="button">Cancelar</Button>
-            <Button variant="contained" type="submit">Guardar</Button>
+            <Button
+              onClick={handleCloseDialog}
+              variant="contained"
+              type="button"
+            >
+              Cancelar
+            </Button>
+            <Button variant="contained" type="submit">
+              Guardar
+            </Button>
           </DialogActions>
         </Box>
       </Dialog>

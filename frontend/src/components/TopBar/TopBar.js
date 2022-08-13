@@ -39,6 +39,23 @@ export const TopBar = () => {
     setOpenLoginDialog(false);
   };
 
+  const handleNavigate = (page) => {
+    navigate(page.path);
+  };
+
+  const pages = [
+    {
+      id: 0,
+      name: "Home",
+      path: "/",
+    },
+    {
+      id: 1,
+      name: "Carrito",
+      path: "/cart",
+    },
+  ];
+
   const settingsMenu = [
     {
       id: 1,
@@ -60,14 +77,22 @@ export const TopBar = () => {
         <Toolbar disableGutters>
           <Box sx={{ flexGrow: 1 }}>
             <Tooltip title="Inicio" arrow>
-              <IconButton color="inherit">
+              <IconButton
+                color="inherit"
+                key={pages[0].name}
+                onClick={() => handleNavigate(pages[0])}
+              >
                 <HomeIcon />
               </IconButton>
             </Tooltip>
           </Box>
 
           <Box sx={{ flexGrow: 0 }} marginRight={2}>
-            <IconButton color="inherit">
+            <IconButton
+              color="inherit"
+              key={pages[1].name}
+              onClick={() => handleNavigate(pages[1])}
+            >
               <ShoppingCartIcon />
             </IconButton>
           </Box>

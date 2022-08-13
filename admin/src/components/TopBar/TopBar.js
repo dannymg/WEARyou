@@ -13,10 +13,9 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import MenuIcon from '@mui/icons-material/Menu';
+import MenuIcon from "@mui/icons-material/Menu";
 
 export const TopBar = () => {
-
   let navigate = useNavigate();
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -35,7 +34,6 @@ export const TopBar = () => {
     navigate(page.path);
   };
 
-
   const pages = [
     {
       id: 1,
@@ -51,8 +49,8 @@ export const TopBar = () => {
       id: 2,
       name: "Notificaciones",
       path: "/notifications",
-    }
-  ]
+    },
+  ];
   const settingsMenu = [
     //   {
     //   id: 1,
@@ -65,24 +63,23 @@ export const TopBar = () => {
       id: 2,
       name: "Cerrar sesión",
       onClick: () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        navigate('/login');
-      }
-    }
-
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/login");
+      },
+    },
   ];
 
   return (
     <AppBar position="fixed">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Button
                 key={page.id}
                 onClick={() => handleCloseNavMenu(page)}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                sx={{ my: 2, color: "white", display: "block" }}
               >
                 {page.name}
               </Button>
@@ -95,17 +92,17 @@ export const TopBar = () => {
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: '45px' }}
+              sx={{ mt: "45px" }}
               id="menu-appbar"
               anchorEl={anchorElUser}
               anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
+                vertical: "top",
+                horizontal: "right",
               }}
               keepMounted
               transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
+                vertical: "top",
+                horizontal: "right",
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}

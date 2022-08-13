@@ -10,62 +10,27 @@ import {
   CssBaseline,
   Typography,
   CircularProgress,
+  Icon,
 } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../../utils/axiosInstance";
 import { isUserAuthenticated } from "../../utils/utils";
-import { AlertDialog } from "../../components/AlertDialog";
-import { AccountFormDialog } from "./AccountFormDialog";
-
-export const Home = () => {
+import RemoveCircleRoundedIcon from "@mui/icons-material/RemoveCircleRounded";
+import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
+export const Cart = () => {
   const [clothes, setClothes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [openAlertDialog, setOpenAlertDialog] = useState(false);
-  const [openNewAccountDialog, setOpenNewAccountDialog] = useState(false);
 
   const fetchClothes = async () => {
-    const response = await axiosInstance.get("/clothe");
-    const { data } = response || {};
+    const data = JSON.parse(localStorage.getItem("cart")) || {};
     const clothesWithId = (data || []).map((item, index) => {
       item.id = index;
       return item;
     });
 
     setClothes(clothesWithId);
-  };
-
-  const handleAddToCart = (clothe) => {
-    if (!isUserAuthenticated()) {
-      setOpenAlertDialog(true);
-      return;
-    } else {
-      try {
-        let cart = JSON.parse(localStorage.getItem("cart"));
-        if (cart == null) {
-          cart = [];
-        }
-        let clotheExists = false;
-        cart.forEach((clotheSaved) => {
-          if (clothe.code === clotheSaved.code) {
-            clotheExists = true;
-          }
-        });
-        if (clotheExists) {
-          alert("El producto ya ha sido agregado previamente");
-        } else {
-          clothe.quantity = 1;
-          cart.push(clothe);
-          localStorage.setItem("cart", JSON.stringify(cart));
-          alert("Producto agregado correctamente");
-        }
-      } catch (error) {
-        const message = error.response.data.message || error.message;
-        alert(`Error: ${message}`);
-      } finally {
-        setLoading(false);
-      }
-    }
   };
 
   useEffect(() => {
@@ -80,14 +45,52 @@ export const Home = () => {
     }
   }, []);
 
-  const handleClose = () => {
-    setOpenAlertDialog(false);
-    setOpenNewAccountDialog(false);
+  const handleIncrementQuantity = (clothe) => {
+    try {
+      let cart = JSON.parse(localStorage.getItem("cart"));
+      if (cart == null) {
+        cart = [];
+      }
+
+      cart.forEach((clotheSaved) => {
+        if (clothe.code === clotheSaved.code) {
+          clotheSaved.quantity += 1;
+        }
+      });
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      fetchClothes();
+    } catch (error) {
+      const message = error.response.data.message || error.message;
+      alert(`Error: ${message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleOk = () => {
-    setOpenAlertDialog(false);
-    setOpenNewAccountDialog(true);
+  const handleDecrementQuantity = (clothe) => {
+    try {
+      let cart = JSON.parse(localStorage.getItem("cart"));
+      if (cart == null) {
+        cart = [];
+      }
+
+      cart.forEach((clotheSaved) => {
+        if (clothe.code === clotheSaved.code) {
+          if (clotheSaved.quantity > 1) {
+            clotheSaved.quantity -= 1;
+          }
+        }
+      });
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      fetchClothes();
+    } catch (error) {
+      const message = error.response.data.message || error.message;
+      alert(`Error: ${message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {
@@ -138,18 +141,19 @@ export const Home = () => {
                     ${clothe.price}
                   </Typography>
                 </Box>
-                <Box sx={{ flexGrow: 0 }}>
-                  {/*<Tooltip title="Agregar al carrito de compras" arrow>
-                   <IconButton >
-                    <AddShoppingCartIcon />
-                  </IconButton>
-                </Tooltip> */}
-                  <Button
-                    startIcon={<AddShoppingCartIcon />}
-                    variant="outlined"
-                    onClick={() => handleAddToCart(clothe)}
+                <Box sx={{ mr: 1 }} borderRadius="10%">
+                  <Button onClick={() => handleDecrementQuantity(clothe)}>
+                    <RemoveCircleRoundedIcon />
+                  </Button>
+                  <Typography
+                    variant="h5"
+                    display={"inline"}
+                    color="text.secondary"
                   >
-                    Agregar al carrito
+                    {clothe.quantity}
+                  </Typography>
+                  <Button onClick={() => handleIncrementQuantity(clothe)}>
+                    <AddCircleRoundedIcon />
                   </Button>
                 </Box>
               </CardActions>
@@ -157,14 +161,6 @@ export const Home = () => {
           </Grid>
         ))}
       </Grid>
-      <AlertDialog
-        open={openAlertDialog}
-        onClickCancel={handleClose}
-        onClickOk={handleOk}
-        description={"Debes iniciar sesión para agregar al carrito"}
-        okButtonText={"Crear Cuenta"}
-      />
-      <AccountFormDialog open={openNewAccountDialog} onClose={handleClose} />
     </Layout>
   );
 };
