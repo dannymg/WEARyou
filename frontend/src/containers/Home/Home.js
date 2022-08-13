@@ -10,6 +10,7 @@ import {
   CssBaseline,
   Typography,
   CircularProgress,
+  cardActionAreaClasses,
 } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import { useEffect, useState } from "react";
@@ -39,6 +40,31 @@ export const Home = () => {
     if (!isUserAuthenticated()) {
       setOpenAlertDialog(true);
       return;
+    } else {
+      try {
+        let cart = JSON.parse(localStorage.getItem("cart"));
+        if (cart == null) {
+          cart = [];
+        }
+        let clotheExists = false;
+        cart.forEach((clotheSaved) => {
+          if (clothe.code == clotheSaved.code) {
+            clotheExists = true;
+          }
+        });
+        if (clotheExists) {
+          alert("El producto ya ha sido agregado previamente");
+        } else {
+          cart.push(clothe);
+          localStorage.setItem("cart", JSON.stringify(cart));
+          alert("Producto agregado correctamente");
+        }
+      } catch (error) {
+        const message = error.response.data.message || error.message;
+        alert(`Error: ${message}`);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 

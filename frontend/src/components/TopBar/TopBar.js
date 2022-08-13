@@ -46,6 +46,7 @@ export const TopBar = () => {
       onClick: () => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
+        localStorage.removeItem("cart");
         navigate("/");
       },
     },
