@@ -25,7 +25,7 @@ export const Home = () => {
   const [openNewAccountDialog, setOpenNewAccountDialog] = useState(false);
 
   const fetchClothes = async () => {
-    const response = await axiosInstance.get('/clothe');
+    const response = await axiosInstance.get("/clothe");
     const { data } = response || {};
     const clothesWithId = (data || []).map((item, index) => {
       item.id = index;
@@ -33,15 +33,14 @@ export const Home = () => {
     });
 
     setClothes(clothesWithId);
-  }
+  };
 
   const handleAddToCart = (clothe) => {
     if (!isUserAuthenticated()) {
       setOpenAlertDialog(true);
       return;
-
     }
-  }
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -53,7 +52,7 @@ export const Home = () => {
     } finally {
       setLoading(false);
     }
-  }, [])
+  }, []);
 
   const handleClose = () => {
     setOpenAlertDialog(false);
@@ -62,21 +61,28 @@ export const Home = () => {
 
   const handleOk = () => {
     setOpenAlertDialog(false);
-    setOpenNewAccountDialog(true)
-  }
+    setOpenNewAccountDialog(true);
+  };
 
   if (loading) {
-    return <Layout>
-      <Box minHeight={'75vh'} display={'flex'} alignItems={'center'} justifyContent={'center'}>
-        <CircularProgress />
-      </Box>
-    </Layout>
+    return (
+      <Layout>
+        <Box
+          minHeight={"75vh"}
+          display={"flex"}
+          alignItems={"center"}
+          justifyContent={"center"}
+        >
+          <CircularProgress />
+        </Box>
+      </Layout>
+    );
   }
 
   return (
     <Layout>
       <CssBaseline />
-      <Grid spacing={2} container minHeight={'75vh'}>
+      <Grid spacing={2} container minHeight={"75vh"}>
         {clothes.map((clothe, index) => (
           <Grid key={index} item sm={4}>
             <Card sx={{ maxWidth: 345 }}>
@@ -129,13 +135,10 @@ export const Home = () => {
         open={openAlertDialog}
         onClickCancel={handleClose}
         onClickOk={handleOk}
-        description={'Debes iniciar sesión para agregar al carrito'}
-        okButtonText={'Crear Cuenta'}
+        description={"Debes iniciar sesión para agregar al carrito"}
+        okButtonText={"Crear Cuenta"}
       />
-      <AccountFormDialog
-        open={openNewAccountDialog}
-        onClose={handleClose} />
-
+      <AccountFormDialog open={openNewAccountDialog} onClose={handleClose} />
     </Layout>
   );
 };

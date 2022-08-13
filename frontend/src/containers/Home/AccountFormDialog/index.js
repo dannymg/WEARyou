@@ -1,1 +1,1 @@
-export * from './AccountFormDialog.js'
+export * from "./AccountFormDialog.js";

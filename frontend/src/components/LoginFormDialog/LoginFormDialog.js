@@ -9,20 +9,14 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { axiosInstance } from "../../../utils/axiosInstance";
+import { axiosInstance } from "../../utils/axiosInstance";
 
-export const AccountFormDialog = ({ open, onClose }) => {
+export const LoginFormDialog = ({ open, onClose }) => {
   let navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const defaultFormData = {
     username: "",
-    email: "",
     password: "",
-    name: "",
-    last_name: "",
-    birth_date: "",
-    phone: "",
-    direction: [],
   };
   const [formData, setFormData] = useState(defaultFormData);
 
@@ -44,7 +38,7 @@ export const AccountFormDialog = ({ open, onClose }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await axiosInstance.post("/user/sign_up", formData);
+      const response = await axiosInstance.post("/user/sign_in", formData);
       const { data } = response || {};
       const { token, user } = data || {};
       if (!token || !user) {
@@ -53,7 +47,7 @@ export const AccountFormDialog = ({ open, onClose }) => {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
       navigate("/", { replace: true });
-      alert("Usuario creado correctamente");
+      alert("Ingreso correcto");
       handleOnClose(e);
     } catch (error) {
       const message = error.response.data.message || error.message;
@@ -66,7 +60,7 @@ export const AccountFormDialog = ({ open, onClose }) => {
   return (
     <Dialog open={open} onClose={handleOnClose} fullWidth="sm">
       <Box component="form" noValidate onSubmit={handleSubmit}>
-        <DialogTitle>Crear Nueva Cuenta</DialogTitle>
+        <DialogTitle>Iniciar Sesion </DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -80,16 +74,6 @@ export const AccountFormDialog = ({ open, onClose }) => {
           />
 
           <TextField
-            label="Email"
-            name="email"
-            variant="standard"
-            fullWidth
-            onChange={onChangeInputFormData}
-            value={formData.email}
-            required
-          />
-
-          <TextField
             label="Contraseña"
             name="password"
             variant="standard"
@@ -99,52 +83,13 @@ export const AccountFormDialog = ({ open, onClose }) => {
             type="password"
             required
           />
-
-          <TextField
-            label="Nombre"
-            name="name"
-            variant="standard"
-            fullWidth
-            onChange={onChangeInputFormData}
-            value={formData.name}
-            required
-          />
-
-          <TextField
-            label="Apellido"
-            name="last_name"
-            variant="standard"
-            fullWidth
-            onChange={onChangeInputFormData}
-            value={formData.last_name}
-          />
-
-          <TextField
-            label="Teléfono"
-            name="phone"
-            variant="standard"
-            fullWidth
-            onChange={onChangeInputFormData}
-            value={formData.phone}
-          />
-
-          <TextField
-            label="Fecha de Nacimiento"
-            name="birth_date"
-            variant="standard"
-            placeholder="dd/mm/yyyy"
-            fullWidth
-            type={"date"}
-            onChange={onChangeInputFormData}
-            value={formData.birth_date}
-          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleOnClose} variant="contained" type="button">
             Cancelar
           </Button>
           <Button variant="contained" type="submit" loading={loading}>
-            Guardar
+            Ingresar
           </Button>
         </DialogActions>
       </Box>
