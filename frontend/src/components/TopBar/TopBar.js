@@ -10,11 +10,12 @@ import {
   Typography,
   Menu,
   Avatar,
+  Badge,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import HomeIcon from "@mui/icons-material/Home";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { isUserAuthenticated } from "../../utils/utils";
 import { LoginFormDialog } from "../LoginFormDialog";
 
@@ -22,6 +23,7 @@ export const TopBar = () => {
   let navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [openLoginDialog, setOpenLoginDialog] = useState(false);
+  const [productCounter, setProductCounter] = useState(0);
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -43,6 +45,15 @@ export const TopBar = () => {
     navigate(page.path);
   };
 
+  const handleProductCounter = () => {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    let productCounter = 0;
+    cart.forEach((clothe) => {
+      productCounter += 1;
+    });
+    setProductCounter(productCounter);
+  };
   const pages = [
     {
       id: 0,
@@ -58,19 +69,39 @@ export const TopBar = () => {
 
   const settingsMenu = [
     {
+      id: 0,
+      name: "Cuenta",
+      onClick: () => {
+        navigate("/");
+      },
+    },
+    {
       id: 1,
       name: "Cerrar sesión",
       onClick: () => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         localStorage.removeItem("cart");
+        window.dispatchEvent(new Event("LogOut"));
         navigate("/");
       },
     },
   ];
 
-  const userIsAuthenticated = isUserAuthenticated();
+  useEffect(() => {
+    handleProductCounter();
+    window.addEventListener("addProductToCart", () => {
+      handleProductCounter();
+    });
+    window.addEventListener("removeProductFromCart", () => {
+      handleProductCounter();
+    });
+    window.addEventListener("LogOut", () => {
+      handleProductCounter();
+    });
+  }, []);
 
+  const userIsAuthenticated = isUserAuthenticated();
   return (
     <AppBar position="fixed">
       <Container maxWidth="xl">
@@ -93,7 +124,16 @@ export const TopBar = () => {
               key={pages[1].name}
               onClick={() => handleNavigate(pages[1])}
             >
-              <ShoppingCartIcon />
+              <Badge
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                badgeContent={productCounter}
+                color="secondary"
+              >
+                <ShoppingCartIcon />
+              </Badge>
             </IconButton>
           </Box>
           {!userIsAuthenticated && (

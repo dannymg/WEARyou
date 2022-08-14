@@ -19,6 +19,8 @@ import { axiosInstance } from "../../utils/axiosInstance";
 import { isUserAuthenticated } from "../../utils/utils";
 import RemoveCircleRoundedIcon from "@mui/icons-material/RemoveCircleRounded";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
+import DeleteForeverRoundedIcon from "@mui/icons-material/DeleteForeverRounded";
+
 export const Cart = () => {
   const [clothes, setClothes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -93,6 +95,30 @@ export const Cart = () => {
     }
   };
 
+  const handleDeleteProduct = (clothe) => {
+    try {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+      let indexCounter = 0;
+      for (let i = 0; i < cart.length; i++) {
+        if (clothe.code === cart[i].code) {
+          indexCounter = i;
+        }
+      }
+
+      cart.splice(indexCounter, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+
+      fetchClothes();
+      window.dispatchEvent(new Event("removeProductFromCart"));
+    } catch (error) {
+      const message = error.response.data.message || error.message;
+      alert(`Error: ${message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <Layout>
@@ -154,6 +180,11 @@ export const Cart = () => {
                   </Typography>
                   <Button onClick={() => handleIncrementQuantity(clothe)}>
                     <AddCircleRoundedIcon />
+                  </Button>
+                </Box>
+                <Box sx={{ mr: 1 }} borderRadius="10%">
+                  <Button onClick={() => handleDeleteProduct(clothe)}>
+                    <DeleteForeverRoundedIcon />
                   </Button>
                 </Box>
               </CardActions>

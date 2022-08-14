@@ -27,8 +27,16 @@ export const Home = () => {
   const fetchClothes = async () => {
     const response = await axiosInstance.get("/clothe");
     const { data } = response || {};
+    let cartStorage = JSON.parse(localStorage.getItem("cart")) || [];
     const clothesWithId = (data || []).map((item, index) => {
       item.id = index;
+      let clotheExists = false;
+      cartStorage.forEach((clothe) => {
+        if (item.id == clothe.id) {
+          clotheExists = true;
+        }
+      });
+      item.disabled = clotheExists;
       return item;
     });
 
@@ -52,12 +60,14 @@ export const Home = () => {
           }
         });
         if (clotheExists) {
-          alert("El producto ya ha sido agregado previamente");
+          // alert("El producto ya ha sido agregado previamente");
         } else {
           clothe.quantity = 1;
           cart.push(clothe);
           localStorage.setItem("cart", JSON.stringify(cart));
-          alert("Producto agregado correctamente");
+          // alert("Producto agregado correctamente");
+          window.dispatchEvent(new Event("addProductToCart"));
+          window.dispatchEvent(new Event("disableProduct"));
         }
       } catch (error) {
         const message = error.response.data.message || error.message;
@@ -72,6 +82,12 @@ export const Home = () => {
     setLoading(true);
     try {
       fetchClothes();
+      window.addEventListener("disableProduct", () => {
+        fetchClothes();
+      });
+      window.addEventListener("LogOut", () => {
+        fetchClothes();
+      });
     } catch (error) {
       const message = error.response.data.message || error.message;
       alert(`Error: ${message}`);
@@ -148,6 +164,7 @@ export const Home = () => {
                     startIcon={<AddShoppingCartIcon />}
                     variant="outlined"
                     onClick={() => handleAddToCart(clothe)}
+                    disabled={clothe.disabled}
                   >
                     Agregar al carrito
                   </Button>
