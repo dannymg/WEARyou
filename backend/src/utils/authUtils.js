@@ -57,7 +57,7 @@ export const ensureIsAuthenticated = async (req, res, next) => {
     const user = await User.findOne({
       where: {
         username: payload.sub,
-      }
+      },
     });
 
     if (!user) {
@@ -115,12 +115,11 @@ export const cleanUser = (user) => {
   };
 };
 
-
 export const createAdminUserIfNotExists = async () => {
   const adminUser = await User.findOne({
     where: {
       username: constants.ADMIN.USERNAME,
-    }
+    },
   });
   if (!adminUser) {
     const salt = generateARandomSalt();
@@ -139,8 +138,8 @@ export const createAdminUserIfNotExists = async () => {
       password: passwordHashed,
     });
     await user.save();
-    console.log('Admin user created');
+    console.log("Admin user created");
     return;
   }
-  console.log('Admin user already exists');
-}
+  console.log("Admin user already exists");
+};
