@@ -1,0 +1,75 @@
+version: "3"
+services:
+  backend:
+    image: backend-wearyou
+    build: ./backend
+    container_name: backend-wearyou
+    restart: always
+    env_file:
+      - ./backend/.env.docker
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./backend:/app
+      # - ./backend/node_modules:/app/node_modules
+    depends_on:
+      - db
+    networks:
+      - my-network
+    # command: sh -c "npm run dev"
+
+  frontend:
+    image: frontend-wearyou
+    build: ./frontend
+    container_name: frontend-wearyou
+    restart: always
+    stdin_open: true
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      # - ./frontend/node_modules:/app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - my-network
+  #   command: sh -c "yarn install && yarn start"
+
+  admin:
+    image: admin-wearyou
+    build: ./admin
+    container_name: admin-wearyou
+    restart: always
+    stdin_open: true
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./admin:/app
+      # - ./admin/node_modules:/app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - my-network
+  #   command: sh -c "yarn install && yarn start"
+
+  db:
+    image: postgres:10-alpine
+    container_name: db
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=wearyou
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    networks:
+      - my-network
+
+# volumes:
+#   db:
+#     driver: local
+
+networks:
+  my-network:
